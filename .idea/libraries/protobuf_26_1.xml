@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="protobuf-26.1">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../NettyTest20240326/protobuf-26.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/../NettyTest20240326/protobuf-26.1.jar!/" />
+    </SOURCES>
+  </library>
+</component>

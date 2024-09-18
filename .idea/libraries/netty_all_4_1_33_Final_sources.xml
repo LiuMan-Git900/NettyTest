@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="netty-all-4.1.33.Final-sources">
+    <CLASSES>
+      <root url="jar://F:/P4Work/code/server/ksg/libs/netty-all-4.1.33.Final.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://F:/P4Work/code/server/ksg/libs/netty-all-4.1.33.Final-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
