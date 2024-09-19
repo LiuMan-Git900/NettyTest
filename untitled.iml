@@ -9,7 +9,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="core" level="project" />
     <orderEntry type="library" name="netty-all-4.1.33.Final-sources" level="project" />
-    <orderEntry type="library" name="msgpack_core_jar" level="project" />
     <orderEntry type="library" name="msgpack-core" level="project" />
     <orderEntry type="library" name="protobuf-26.1" level="project" />
     <orderEntry type="library" name="freemarker" level="project" />
