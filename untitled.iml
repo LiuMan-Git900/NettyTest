@@ -12,5 +12,6 @@
     <orderEntry type="library" name="msgpack_core_jar" level="project" />
     <orderEntry type="library" name="msgpack-core" level="project" />
     <orderEntry type="library" name="protobuf-26.1" level="project" />
+    <orderEntry type="library" name="freemarker" level="project" />
   </component>
 </module>

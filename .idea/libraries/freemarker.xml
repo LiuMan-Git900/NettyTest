@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="freemarker">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/freemarker.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/lib/freemarker-core/src/main/java" />
+      <root url="file://$PROJECT_DIR$/lib/freemarker-core/src/main/misc/identifierChars/src/main" />
+      <root url="file://$PROJECT_DIR$/lib/freemarker-core/src/test/java" />
+    </SOURCES>
+  </library>
+</component>
