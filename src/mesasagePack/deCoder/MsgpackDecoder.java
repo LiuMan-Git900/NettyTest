@@ -1,6 +1,6 @@
-package enCodAndDeCode.mesasagePack.deCoder;
+package mesasagePack.deCoder;
 
-import enCodAndDeCode.mesasagePack.other.MsgToObjFunction;
+import mesasagePack.other.MsgToObjFunction;
 import business.obj.CallInfo;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;

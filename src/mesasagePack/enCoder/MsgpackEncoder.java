@@ -1,4 +1,4 @@
-package enCodAndDeCode.mesasagePack.enCoder;
+package mesasagePack.enCoder;
 
 import business.obj.CallInfo;
 import io.netty.buffer.ByteBuf;

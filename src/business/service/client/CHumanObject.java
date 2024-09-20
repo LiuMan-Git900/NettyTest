@@ -5,6 +5,8 @@ import com.google.protobuf.GeneratedMessage;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
 
+import com.google.protobuf.Parser;
+import com.lzp.netty.protobuf.ProtobufTest;
 import gen.tool.GenUtils;
 import gen.MsgIds;
 import io.netty.buffer.ByteBuf;
@@ -13,9 +15,17 @@ import io.netty.channel.Channel;
 
 
 import java.util.concurrent.atomic.AtomicInteger;
-
+/**
+ * 为什么商业服务器要考虑线程模型，因为很简单，我们有心跳，需要提供心跳服务,心跳服务就是将humanObject挂载在服务器线程上。引出逻辑线程的必要性
+ *  这个时候就需要考虑线程负载均衡了，将不同的humanObject挂载到线程上去。
+ *  同时设置一个connection对象作为中间对象：netty线程将byte数据存到connection对象中
+ *  服务器逻辑线程将humanObject心脏中处理connection中的数据。linkeBolckingQueue<byte[]>
+ *  connection就是横跨两个线程的中间对象。目的是为了保证线程的工作区分：io线程只做数据传输，服务器逻辑线程进行编码解码
+ *  编解码完成后就进行数据的分发，开始设计到功能模块了，也就是我们程序的价值了
+ * */
 public class CHumanObject {
     public static AtomicInteger ID = new AtomicInteger(1);
+    public static AtomicInteger pos = new AtomicInteger(1);
     private Channel channel;
     public final int id;
 
@@ -23,32 +33,27 @@ public class CHumanObject {
         this.channel = channel;
         this.id= ID.incrementAndGet();
     }
+    // TODO
+    public void pulse() {
 
+    }
     public void initModule() {
+        sendTest();
     }
-    /**
-     * 与客户端通讯的处理接口
-     * 外部通讯处理接口，因为没有商业服务器本身的线程，所以使用Netty的IO线程，接收到数据后直接处理
-     * 优化：使用商业服务器自己的线程来处理，将IO线程通讯的对象，放入到存储器中，等商业服务器自己线程处理
-     * IO通信线程和商业服务器的服务器线程分离
-     * */
-    public void handlerTestInfo(CallInfo testInfo) {
-
-    }
-    // 动静分离
-    // 把消息解码和消息编码放在HumanObject这里，是因为变化的是协议和协议处理，不变的是协议变成byte序列后的传输，所以netty只负责传输byte协议
-    // 而编码解码放在我们自己的逻辑对象上，我们自己可编写部分上，动静分离
-    // 所以我们消息处理和消息发生都是自己的逻辑，真正走到netty上的其实是已经序列化后的byte序列
-    // netty在设计中不涉及到编解码技术，支付中传输，编解码技术机制放在我们自己这对象
+    /** 编解码和分发 */
     public void handlerMsg(byte[] bytes) throws InvalidProtocolBufferException {
+        // 编解码技术
         if(bytes == null || bytes.length == 0) {
             return;
         }
         int msgId = GenUtils.bytesToBigEndian32(bytes, 0);
-        GeneratedMessage message = (GeneratedMessage) MsgIds.getParser(msgId);
-        if(message == null) {
+        Parser parser = (Parser) MsgIds.getParser(msgId);
+        if(parser == null) {
             return;
         }
+        GeneratedMessage message = (GeneratedMessage) parser.parseFrom(bytes,4, bytes.length - 4);
+
+        // 消息分发
         HumanObjectHandlerMsg(msgId, message);
     }
     // -------------------------------------- 发送器
@@ -74,33 +79,30 @@ public class CHumanObject {
 
     // -------------------------------解析器 end---------------------------------------------------------------------
     // ---------------------------------处理方法 start-------------------------------------------------------------------
-    // TODO 每次沦陷太慢了，可不可以抽离出来做一个map映射。注册map，调用map
+    // TODO 问题：每次轮询太慢了，可不可以抽离出来做一个map映射。注册map，调用map
     // 将功能处理从humanObject中抽离出去，因为太多了
-    // 这么设计是解决什么问题，有什么精妙之处
     private void HumanObjectHandlerMsg(int msgId , GeneratedMessage message) {
-        if (msgId == 1) {
-            OnMyMessage(message);
+        if(msgId == MsgIds.SCSceneEnter) {
+            onSCSceneEnter(message);
             return;
         }
-        if(msgId == 2) {
-            OnMySecondMessage(message);
-            return;
-        }
-    }
-    private void OnMyMessage(GeneratedMessage message) {
-//        MsgOptions3.MyMessage msg  = (MsgOptions3.MyMessage) message;
-//        long objId = msg.getObjId();
-//        System.out.println("server:netty网络通信接收到 MyMessage 协议，反序列化正确，交给功能系统处理协议. objId = " + objId);
-        // TODO
-        // 服务器接受到MyMessage协议就给客户端发送MySecondMessage协议
-        // 客户端接受到MySecondMessage协议就给服务器发送MyMessage协议
-        // 然后客户端先发送MyMessage协议给服务器
     }
 
-    private void OnMySecondMessage(GeneratedMessage message) {
-//        MsgOptions3.MySecondMessage msg = (MsgOptions3.MySecondMessage) message;
-//        long objId = msg.getObjId();
-//        System.out.println("server:netty网络通信接收到 MySecondMessage 协议，反序列化正确，交给功能系统处理协议. objId = " + objId);
+
+    private void onSCSceneEnter(GeneratedMessage message) {
+        System.out.println("客户端：接收到服务器数据");
+        sendTest();
+    }
+
+    private void sendTest() {
+        ProtobufTest.CSSceneEnter.Builder builder = ProtobufTest.CSSceneEnter.newBuilder();
+        ProtobufTest.DVector3.Builder vector = ProtobufTest.DVector3.newBuilder();
+        vector.setX(pos.intValue());
+        vector.setY(pos.intValue());
+        vector.setZ(pos.intValue());
+        builder.setPos(vector);
+        sendMsg(builder.build());
+        pos.incrementAndGet();
     }
 
     // ---------------------------------处理方法 end-------------------------------------------------------------------

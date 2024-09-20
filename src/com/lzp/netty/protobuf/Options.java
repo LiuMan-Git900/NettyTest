@@ -27,7 +27,7 @@ public final class Options {
   }
   public static final int MSGID_FIELD_NUMBER = 10001;
   /**
-   * <code>extend .google.protobuf.MessageOptions { ... }</code>
+   * <code>extend .google.gen.com.lzp.netty.protobuf.MessageOptions { ... }</code>
    */
   public static final
     com.google.protobuf.GeneratedMessage.GeneratedExtension<
@@ -45,8 +45,8 @@ public final class Options {
       descriptor;
   static {
     String[] descriptorData = {
-      "\n\roptions.proto\032 google/protobuf/descrip" +
-      "tor.proto:/\n\005msgid\022\037.google.protobuf.Mes" +
+      "\n\roptions.proto\032 google/gen.com.lzp.netty.protobuf/descrip" +
+      "tor.proto:/\n\005msgid\022\037.google.gen.com.lzp.netty.protobuf.Mes" +
       "sageOptions\030\221N \001(\005B!\n\026com.lzp.netty.prot" +
       "obufB\007Options"
     };

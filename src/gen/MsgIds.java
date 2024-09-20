@@ -6,6 +6,8 @@ import com.ksg.core.support.SysException;
 import gen.tool.GenUtils;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -28,7 +30,7 @@ public class MsgIds {
             throw new SysException(e);
         }
     }
-    public static void init() throws IllegalAccessException, NoSuchFieldException {
+    public static void init() throws IllegalAccessException, NoSuchFieldException, NoSuchMethodException, InvocationTargetException {
         Map<String, Integer> nameMapName = new HashMap<>();
         Field[] fields = MsgIds.class.getFields();
         for (Field field: fields) {
@@ -48,11 +50,14 @@ public class MsgIds {
             if (msgId == null) {
                 continue;
             }
+            Method method = clazz.getMethod("parser");
+
             idMapClazz.put(msgId, clazz);
-            idMapParser.put(msgId, (Parser) clazz.getField("PARSER").get(null));
+            idMapParser.put(msgId, (Parser) method.invoke(null));
             clazzMapId.put(clazz, msgId);
         }
     }
+
 
     public static Parser getParser(int msgId) {
         return idMapParser.get(msgId);

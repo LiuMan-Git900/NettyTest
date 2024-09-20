@@ -1,4 +1,4 @@
-package enCodAndDeCode.mesasagePack.other;
+package mesasagePack.other;
 
 import business.obj.CallInfo;
 

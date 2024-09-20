@@ -205,7 +205,7 @@ public class GenUtils {
     // protobuff文件的反射机制：描述文件，File
     public static void ProtoBuffReflex2() throws IOException {
         // TODO descript描述文件反射desc2
-        File file = new File("E:\\protobuf-26.1-win64\\bin\\desc2");
+        File file = new File("E:\\gen.com.lzp.netty.protobuf-26.1-win64\\bin\\desc2");
         FileInputStream fileInputStream = new FileInputStream(file);
         try{
             DescriptorProtos.FileDescriptorSet fileDescriptorSet = DescriptorProtos.FileDescriptorSet.parseFrom(fileInputStream);
@@ -255,7 +255,7 @@ public class GenUtils {
         return  (((int)bytes[offset] & 0xFF) << 24) |
                 (((int)bytes[offset + 1] & 0xFF) << 16) |
                 (((int)bytes[offset + 2] & 0xFF) << 8) |
-                (((int)bytes[offset] & 0xFF)        );
+                (((int)bytes[offset + 3] & 0xFF)        );
     }
 
 }

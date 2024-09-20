@@ -432,7 +432,7 @@ public final class ProtobufTest {
                 DVector3.class, Builder.class);
       }
 
-      // Construct using com.lzp.netty.protobuf.ProtobufTest.DVector3.newBuilder()
+      // Construct using com.lzp.netty.gen.com.lzp.netty.protobuf.ProtobufTest.DVector3.newBuilder()
       private Builder() {
 
       }
@@ -1085,7 +1085,7 @@ public final class ProtobufTest {
                 CSSceneEnter.class, Builder.class);
       }
 
-      // Construct using com.lzp.netty.protobuf.ProtobufTest.CSSceneEnter.newBuilder()
+      // Construct using com.lzp.netty.gen.com.lzp.netty.protobuf.ProtobufTest.CSSceneEnter.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -1701,7 +1701,7 @@ public final class ProtobufTest {
                 SCSceneEnter.class, Builder.class);
       }
 
-      // Construct using com.lzp.netty.protobuf.ProtobufTest.SCSceneEnter.newBuilder()
+      // Construct using com.lzp.netty.gen.com.lzp.netty.protobuf.ProtobufTest.SCSceneEnter.newBuilder()
       private Builder() {
 
       }
@@ -1964,7 +1964,7 @@ public final class ProtobufTest {
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
-          Options.getDescriptor(),
+          com.lzp.netty.protobuf.Options.getDescriptor(),
         });
     internal_static_DVector3_descriptor =
       getDescriptor().getMessageTypes().get(0);

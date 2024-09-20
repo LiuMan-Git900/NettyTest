@@ -1,7 +1,7 @@
 package network.client;
 
-import enCodAndDeCode.mesasagePack.deCoder.MsgpackDecoder;
-import enCodAndDeCode.mesasagePack.enCoder.MsgpackEncoder;
+import mesasagePack.deCoder.MsgpackDecoder;
+import mesasagePack.enCoder.MsgpackEncoder;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -12,8 +12,10 @@ import io.netty.handler.codec.DelimiterBasedFrameDecoder;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.codec.LengthFieldPrepender;
 import io.netty.handler.codec.string.StringDecoder;
-
-public class FirstClient {
+/**
+ * 客户端通信组件
+ * */
+public class ClientNetWork {
     public void Connection(int Port) {
         // 配置客户端的nio线程组
         EventLoopGroup eventLoopGroup = new NioEventLoopGroup();
@@ -25,7 +27,7 @@ public class FirstClient {
                     .handler(new ChannelInitializer() {
                         @Override
                         protected void initChannel(Channel ch) throws Exception {
-                            InitChannelOfMessagePack(ch);
+                            InitChannelOfProtoBuff(ch);
                         }
                     });
             ChannelFuture f = clientBootStrap.connect("localhost",8080).sync();
@@ -41,7 +43,7 @@ public class FirstClient {
         ByteBuf delimiter =  Unpooled.copiedBuffer("#_".getBytes());
         channel.pipeline().addLast(new DelimiterBasedFrameDecoder(1024, delimiter))
                 .addLast(new StringDecoder())
-                .addLast(new MyClientChannelHandler());
+                .addLast(new ClientNetWorkHandler());
     }
 
     public static void InitChannelOfMessagePack(Channel channel) {
@@ -50,13 +52,13 @@ public class FirstClient {
                 .addLast(new MsgpackDecoder())
                 .addLast(new LengthFieldPrepender(2))
                 .addLast(new MsgpackEncoder())
-                .addLast(new MyClientChannelHandler());
+                .addLast(new ClientNetWorkHandler());
     }
 
     public static void InitChannelOfProtoBuff(Channel channel) {
         channel.pipeline()
                 .addLast(new LengthFieldBasedFrameDecoder(65536,0,2,0,2))
                 .addLast(new LengthFieldPrepender(2))
-                .addLast(new MyClientChannelHandler());
+                .addLast(new ClientNetWorkHandler());
     }
 }
