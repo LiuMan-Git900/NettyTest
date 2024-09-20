@@ -2,12 +2,10 @@ package gen;
 
 import com.google.protobuf.GeneratedMessage;
 import com.google.protobuf.Parser;
-import com.ksg.core.support.Sys;
 import com.ksg.core.support.SysException;
+import gen.tool.GenUtils;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -23,11 +21,6 @@ public class MsgIds {
     /** ID映射解析器 */
     public static Map<Integer, Parser> idMapParser = new HashMap<>();
 
-    public static void main(String[] args) {
-        System.out.println(clazzMapId);
-        System.out.println(idMapParser);
-        System.out.println(idMapClazz);
-    }
     static {
         try {
             init();
@@ -35,7 +28,7 @@ public class MsgIds {
             throw new SysException(e);
         }
     }
-    public static void init() throws IllegalAccessException, NoSuchFieldException, NoSuchMethodException, InvocationTargetException {
+    public static void init() throws IllegalAccessException, NoSuchFieldException {
         Map<String, Integer> nameMapName = new HashMap<>();
         Field[] fields = MsgIds.class.getFields();
         for (Field field: fields) {
@@ -55,9 +48,8 @@ public class MsgIds {
             if (msgId == null) {
                 continue;
             }
-            Method method = clazz.getMethod("parser");
             idMapClazz.put(msgId, clazz);
-            idMapParser.put(msgId, (Parser) method.invoke(null));
+            idMapParser.put(msgId, (Parser) clazz.getField("PARSER").get(null));
             clazzMapId.put(clazz, msgId);
         }
     }

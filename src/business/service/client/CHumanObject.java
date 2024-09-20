@@ -5,7 +5,7 @@ import com.google.protobuf.GeneratedMessage;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
 
-import gen.GenUtils;
+import gen.tool.GenUtils;
 import gen.MsgIds;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;

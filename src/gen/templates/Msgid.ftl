@@ -3,6 +3,7 @@ package gen;
 import com.google.protobuf.GeneratedMessage;
 import com.google.protobuf.Parser;
 import com.ksg.core.support.SysException;
+import gen.tool.GenUtils;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;

@@ -1,4 +1,4 @@
-package gen;
+package gen.tool;
 
 
 import com.google.protobuf.DescriptorProtos;
@@ -9,6 +9,7 @@ import com.lzp.netty.protobuf.Options;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateExceptionHandler;
+import gen.MsgGenInfo;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
