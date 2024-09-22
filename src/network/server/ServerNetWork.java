@@ -1,5 +1,6 @@
 package network.server;
 
+import business.core.Node;
 import mesasagePack.deCoder.MsgpackDecoder;
 import mesasagePack.enCoder.MsgpackEncoder;
 import io.netty.bootstrap.ServerBootstrap;
@@ -20,8 +21,15 @@ import java.nio.charset.Charset;
 /**
  * 服务器通信组件
  * */
-public class ServerNetWork {
-    public void bind(int port) {
+public class ServerNetWork implements Runnable {
+    private int port;
+    private Node node;
+    public ServerNetWork(int port, Node node) {
+        this.port = port;
+        this.node = node;
+        node.addNetWork(this);
+    }
+    public void bind() {
         // nio的线程组
         EventLoopGroup boos = new NioEventLoopGroup();
         EventLoopGroup works = new NioEventLoopGroup();
@@ -67,5 +75,16 @@ public class ServerNetWork {
                 .addLast(new LengthFieldPrepender(2))
                 .addLast(new ServerNetWorkHandler());
 
+    }
+
+    public void start() {
+        Thread thread = new Thread(this);
+        thread.setName("ServerNetWork port" + port);
+        thread.start();
+    }
+
+    @Override
+    public void run() {
+        bind();
     }
 }

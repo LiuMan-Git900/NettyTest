@@ -1,5 +1,7 @@
 package business.service.server;
 
+import business.core.Connection;
+import business.core.HumanWork;
 import com.google.protobuf.GeneratedMessage;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
@@ -15,25 +17,40 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public class SHumanObject {
     public static AtomicLong IDAllocator = new AtomicLong(1);
-    private Channel channel;
+    /** ID */
     public final long id;
+    /** netty的链接对象-中间层：netty将数据放入到这，humanObject去取去处理。分离netty和我门商业服务器。
+     * 有很多好处    1：组件分离：netty代码不持有humanObject对象，netty组件可以打包，netty只做数据传输
+     *             2：线程分离：netty线程不持有我们humanObject对象 逻辑线程和netty线程不同时控制这个大额对象。
+     *             3：门对象：可以创建门对象，对登录进行过滤，登录和具体服务功能分流*/
+    private Connection connection;
+    private HumanWork ownerHumanWork;
 
-    public SHumanObject(Channel channel) {
-        this.channel = channel;
+
+
+
+    public SHumanObject(Connection connection) {
         this.id= IDAllocator.incrementAndGet();
+        this.connection = connection;
+
     }
 
     public void pulse() {
-
+        // 消息处理
+        byte[] msgBytes ;
+        while ((msgBytes = connection.pollMessage()) != null) {
+            handlerMsg(msgBytes);
+        }
     }
     public void initModule() {
     }
     /** 编解码和分发 */
-    public void handlerMsg(byte[] bytes) throws InvalidProtocolBufferException {
-        // 编解码技术
-        if(bytes == null || bytes.length == 0) {
-            return;
-        }
+    public void handlerMsg(byte[] bytes){
+        try {
+            // 编解码技术
+            if(bytes == null || bytes.length == 0) {
+                return;
+            }
 //        ByteBuf byteBuf = Unpooled.copiedBuffer(bytes);
 //        int msgId = byteBuf.readInt();
 //        byte[] des = new byte[bytes.length - 4];
@@ -46,30 +63,23 @@ public class SHumanObject {
 //        // 消息分发
 //        HumanObjectHandlerMsg(msgId, message);
 
-        int msgId = GenUtils.bytesToBigEndian32(bytes, 0);
-        Parser parser = (Parser) MsgIds.getParser(msgId);
-        if(parser == null) {
-            return;
+            int msgId = GenUtils.bytesToBigEndian32(bytes, 0);
+            Parser parser = (Parser) MsgIds.getParser(msgId);
+            if(parser == null) {
+                return;
+            }
+            GeneratedMessage message = (GeneratedMessage) parser.parseFrom(bytes,4, bytes.length - 4);
+            // 消息分发
+            HumanObjectHandlerMsg(msgId, message);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        GeneratedMessage message = (GeneratedMessage) parser.parseFrom(bytes,4, bytes.length - 4);
-        // 消息分发
-        HumanObjectHandlerMsg(msgId, message);
+
+
     }
     // -------------------------------------- 发送器
     public void sendMsg(Message message) {
-        int msgId = MsgIds.getMsgId(message.getClass());
-        if(msgId == 0) {
-            System.out.println("未找到对应的消息id");
-            return;
-        }
-        if (this.channel.isActive() && this.channel.isWritable()) {
-            byte[] bytes = message.toByteArray();
-            ByteBuf buf = Unpooled.buffer(bytes.length + 4);
-            buf.writeInt(msgId);
-            buf.writeBytes(bytes);
-            channel.write(buf);
-            channel.flush();
-        }
+        connection.sendMsg(message);
     }
 
 

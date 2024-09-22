@@ -27,11 +27,34 @@ DB系统的的一些思考：
 然后逻辑线程中开始处理消息，DB加载完成了，逻辑线程处理msg，不会出现丢失问题
 
 
-TODO:Connection对象的创建。服务器逻辑线程模型的创建，DB服务的提供（DB系统的接入），Gate对象的创建，断线，重登逻辑的处理。文件系统的接入。DB功能的搭建实战
-* */
-
+Connection对象的创建。服务器逻辑线程模型的创建，DB服务的提供（DB系统的接入），Gate对象的创建，断线，重登逻辑的处理。文件系统的接入。DB功能的搭建实战
+好处：netty的链接对象-中间层：netty将数据放入到这，humanObject去取去处理。分离netty和我门商业服务器。
+    * 有很多好处    1：组件分离：netty代码不持有humanObject对象，netty组件可以打包，netty只做数据传输
+    *             2：线程分离：netty线程不持有我们humanObject对象 逻辑线程和netty线程不同时控制这个大额对象。
+    *             3：门对象：可以创建门对象，对登录进行过滤，登录和具体服务功能分流*/
 
 2024/9/20/ 21：14
 // 工作线程模型搭建的基础思想：netty搭建成功，创建humanobject对象，我们有多个humanObject对象，且每一个对象都需要心跳，所以需要将humanobject对象放到逻辑线程Work中去。
 // Work线程管理多个humanobject对象，且提供心跳功能。为了线程负载均衡，我们需要多个work线程，所以多个work线程也需要也该Node进行管理。
 // Work是线程提供心跳，Node不是线程，只是负责管理work线程。
+// node-worker-humanObject.我们需要用并发容器去存储 ConcurrentHashMap。connction创建时，从node中获取work如何。worker又是node再主线程创造添加的，所以存在多线程问题，需要用并发容器存储
+
+// 门逻辑-黑客攻击无限登录攻击你如何处理
+// connetion 的创建-门对象（少许资源加载）-humanObject完整数据加载-进门以后加载所有服
+// 废物connetion处理，排队和无效的connetion处理
+
+
+
+//需要补充的逻辑
+// Netty源码分析
+// 线程模型的搭建：基础知识：并发容器，锁，线程，线程周期状态，线程中断逻辑。
+// DB服务器框架的搭建
+// 文件系统的搭建
+// 安全系统的搭建，第三方平台的搭建
+
+// gameStartUp启动器
+// 
+// GameNode的服务分布
+// gameWork-GateService-gateObject，nettywork-netyy服务-netty启动.mulHumanWork-HumanSever
+
+

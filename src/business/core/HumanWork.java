@@ -6,8 +6,11 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class HumanWork implements Runnable {
+    /** id */
     private String id;
+    /** 归属Node */
     private Node owner;
+    /** 管理的所有humanObject */
     private Map<Long, SHumanObject> humanObjectMap = new ConcurrentHashMap<>();
 
     public HumanWork(String id, Node owner) {
@@ -21,13 +24,19 @@ public class HumanWork implements Runnable {
     }
 
     public void start() {
-        new Thread(this).start();
+        Thread thread = new Thread(this);
+        thread.setName(id);
+        thread.start();
     }
 
     private void pulse() {
         for (SHumanObject humanObject : humanObjectMap.values()) {
             humanObject.pulse();
         }
+    }
+
+    public String getId() {
+        return id;
     }
 
     @Override
